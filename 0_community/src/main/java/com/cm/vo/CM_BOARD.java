@@ -14,6 +14,14 @@ public class CM_BOARD {
 	private String mod_date;
 	private String report;
 	private String report_count;
+	private String up_count;
+	private String down_count;
+	public String getUp_count() {
+		return up_count == null ? "" : up_count.trim();
+	}
+	public String getDown_count() {
+		return down_count == null ? "" : down_count.trim();
+	}
 	public String getB_num() {
 		return b_num == null ? "" : b_num.trim();
 	}
@@ -81,7 +89,12 @@ public class CM_BOARD {
 	public void setReport(String report) {
 		this.report = report;
 	}
-	
+	public void setUp_count(String up_count) {
+		this.up_count = up_count;
+	}
+	public void setDown_count(String down_count) {
+		this.down_count = down_count;
+	}
 	
 	
 }

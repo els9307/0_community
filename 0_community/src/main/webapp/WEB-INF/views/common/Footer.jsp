@@ -71,17 +71,9 @@
 									</header>
 									<ul>
 										<li><a href="/app">Homepage</a></li>
-										<li><a href="tableList" id="">게시판</a></li>
-										<li><a href="elements.html">Elements</a></li>
-										<li>
-											<span class="opener">Submenu</span>
-											<ul>
-												<li><a href="#">Lorem Dolor</a></li>
-												<li><a href="#">Ipsum Adipiscing</a></li>
-												<li><a href="#">Tempus Magna</a></li>
-												<li><a href="#">Feugiat Veroeros</a></li>
-											</ul>
-										</li>
+										<li><a href="CM_TableList" id="">게시판</a></li>
+										<li><a href="elements.html">이미지 게시판</a></li>
+										
 <!-- 										<li><a href="#">Etiam Dolore</a></li>
 										<li><a href="#">Adipiscing</a></li>
 										<li>
@@ -100,7 +92,7 @@
 								</nav>
 
 							<!-- Section -->
-<section>
+<%-- <section>
 	<header class="major">
 		<h2>Best Img</h2>
 	</header>
@@ -123,8 +115,7 @@
 	<ul class="actions">
 		<li><a href="#" class="button">More</a></li>
 	</ul>
-</section>
-						
+</section> --%>
 
 							<!-- Footer -->
 								<footer id="footer">

@@ -6,7 +6,7 @@ function fn_detail(b_num){
 	$("#frmDetail").submit();
 }
 </script>
-<form action="tableDetailView" method="post" id="frmDetail">
+<form action="CB_TableDetilView" method="post" id="frmDetail">
 	<input type="hidden" id="b_num" name="b_num">
 	<input type="hidden" id="U_check" name="U_check" value="1"> 
 </form>
@@ -29,7 +29,7 @@ function fn_detail(b_num){
 			</c:if>
 			<c:if test="${arr.report_count < 6 }">
 				<%-- <th style="width: 60%" ><a href="tableDetailView?b_num=${arr.b_num }" >${arr.b_category}${arr.b_subject }</a></th> --%>
-				<th style="width: 60%" ><a href="javascript:fn_detail('${arr.b_num }')" >${arr.b_category}${arr.b_subject }</a></th>
+				<th style="width: 60%" ><a href="javascript:fn_detail('${arr.b_num }')" >[${arr.b_category}]${arr.b_subject }</a></th>
 			</c:if>
 			<th class="opener"style="width: 15%">${arr.user_id }</th>
 			<th style="width: 15%">${arr.reg_date }</th>

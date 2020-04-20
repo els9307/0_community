@@ -77,4 +77,159 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 				WHERE USER_ID  = #{user_id}
 	</update>
+	
+	
+	
+	<select id="TableList" parameterType="java.util.HashMap" resultType="com.cm.vo.CM_BOARD">
+		<![CDATA[
+			SELECT * 
+  				FROM( SELECT ROWNUM RN,AA.*FROM
+					( SELECT * FROM CM_BOARD WHERE B_SUBJECT LIKE '%'||#{word}||'%' ORDER BY REG_DATE DESC)AA)
+				  	WHERE RN >= #{startRow}  and RN <= #{endRow}
+		]]>
+	</select>
+	
+	<select id="TableCount" parameterType="java.util.HashMap" resultType="Integer">
+		<![CDATA[
+			SELECT COUNT(*) FROM CM_BOARD
+		]]>
+		<if test='word != "" and word != null'>
+			WHERE B_SUBJECT LIKE '%'||#{word}||'%'
+		</if>
+	</select>
+	<update id="up_PopularCount">
+		<![CDATA[
+			UPDATE CM_BOARD
+				SET
+					UP_COUNT = (SELECT NVL(MAX(UP_COUNT),0)+1 FROM CM_BOARD WHERE B_NUM = #{b_num})
+					WHERE B_NUM = #{b_num}
+		]]>
+	</update>
+	<update id="down_PopularCount">
+		<![CDATA[
+			UPDATE CM_BOARD
+				SET
+					DOWN_COUNT = (SELECT NVL(MAX(DOWN_COUNT),0)+1 FROM CM_BOARD WHERE B_NUM = #{b_num})
+					WHERE B_NUM = #{b_num}
+		]]>
+	</update>
+	<select id="TableDtailView" resultType="com.cm.vo.CM_BOARD">
+		<![CDATA[
+			SELECT * FROM CM_BOARD WHERE B_NUM = #{b_num}
+		]]>
+	</select>
+		<insert id="Board_Insert" parameterType="com.cm.vo.CM_BOARD">
+		<![CDATA[
+			INSERT INTO CM_BOARD(
+					             B_NUM
+					            ,USER_ID
+					            ,B_SUBJECT
+					            ,B_CONTENT
+					            ,B_CATEGORY
+					            ,B_IMG
+					            ,B_THUMBIMG
+					            ,REG_DATE
+					            ,MOD_DATE
+					            )VALUES(
+					            CM_BOARD_SEQ.nextval
+					            ,#{user_id}
+					            ,#{b_subject}
+					            ,#{b_content}
+					            ,#{b_category}
+					            ,#{b_img}
+					            ,#{b_thumbimg}
+					            ,TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS')
+					            ,TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS'))
+					            
+		]]>
+	</insert>
+	<update id="Board_Update" parameterType="com.cm.vo.CM_BOARD">
+		<![CDATA[
+			UPDATE CM_BOARD
+				SET
+				 B_SUBJECT	 = #{b_subject}
+				,B_CONTENT	 = #{b_content}
+				,B_CATEGORY	 = #{b_category}
+				,B_IMG		 = #{b_img}
+				,B_THUMBIMG  = #{b_thumbimg}
+				,MOD_DATE	 = TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS')
+				WHERE B_NUM = #{b_num}
+		]]>
+	</update>
+
+	<update id="report_count">
+		<![CDATA[
+			UPDATE CM_BOARD
+				SET
+					REPORT_COUNT = (SELECT NVL(MAX(REPORT_COUNT),0)+1 FROM CM_BOARD WHERE B_NUM = #{b_num})
+					WHERE B_NUM = #{b_num}
+		]]>
+	</update>
+	<delete id="Delete">
+		<![CDATA[
+			DELETE FROM CM_BOARD WHERE B_NUM = #{b_num}
+		]]>
+	</delete>
+	<select id="Category" resultType="com.cm.vo.CM_BOARD">
+		<![CDATA[
+			SELECT * 
+				FROM CM_BOARD 
+				WHERE B_CATEGORY = #{b_category} AND ROWNUM <= 5 ORDER BY UP_COUNT ASC
+		]]>
+	</select>
+	<select id="IndexList" resultType="com.cm.vo.CM_BOARD">
+		<![CDATA[
+			SELECT *
+				FROM (
+       					 SELECT *
+            				FROM CM_BOARD
+            					ORDER BY UP_COUNT DESC)
+			WHERE ROWNUM < 10000
+            AND UP_COUNT IS NOT NULL
+            AND ROWNUM <= 5
+		]]>
+	</select>
+	<select id="IndexImg" resultType="com.cm.vo.CM_BOARD">
+		<![CDATA[
+			SELECT B_NUM        -- 게시물 번호
+			      ,USER_ID      -- 작성자
+			      ,B_SUBJECT    -- 제목
+			      ,B_CONTENT    -- 내용
+			      ,B_CATEGORY   -- 카테고리
+			      ,B_IMG        -- 이미지 저장
+			      ,B_THUMBIMG   -- 이미지 저장
+			      ,REG_DATE     -- 등록자
+			      ,MOD_DATE     -- 수정자
+			      ,REPORT_COUNT -- 신고누적횟수
+			      ,UP_COUNT     -- 추천누적횟수
+			      ,DOWN_COUNT   -- 비추천누적횟수
+		        FROM CM_BOARD 
+	       		WHERE b_thumbimg IS NOT NULL 
+	       		AND ROWNUM <=9
+		        ORDER BY UP_COUNT DESC
+		]]>
+	</select>
+	<insert id="TableComment" parameterType="com.cm.vo.CM_COMMENT">
+		<![CDATA[
+			INSERT INTO CM_COMMENT(
+								C_NUM
+								,C_WRITER
+								,C_COMMENT
+								,C_SYSDATE
+								,B_NUM
+								,B_WRITER
+								)VALUES(
+								CM_COMMENT_SEQ.nextval
+								,#{c_writer}
+								,#{c_comment}
+								,TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS')
+								,#{b_num}
+								,#{b_writer})
+		]]>
+	</insert>
+	<select id="CommentList" parameterType="String" resultType="com.cm.vo.CM_COMMENT">
+		<![CDATA[
+			SELECT * FROM CM_COMMENT WHERE B_NUM = #{b_num}
+		]]>
+	</select>
 </mapper>
