@@ -26,9 +26,23 @@
 	  $("#login").click(function(){
 		var login_id = $("#user_id").val();
     	console.log("로그인 아이디 = " + login_id);
-    	$("#frm_login").submit();
+    	$.ajax({
+    		type : "post",
+    		url : "idChk",
+    		data : {"user_id" : login_id},
+    		dataType : "json",
+    		success : function(result){
+    			if(result == 0){
+    				alert("아이디가 존재하지 않습니다. 회원가입을 해주세요!");
+    				$("#user_id").val("");
+    				$("#user_pwd").val("");
+    				
+    			}else if(result == 1){
+    				$("#frm_login").submit();
+    			}
+    		}
+    	})
 	  })
-
   })
 
 </script>

@@ -27,14 +27,43 @@
 			$("#frm_UpdateView").submit();
 		})
 		$("#up_btn").click(function(){
-			alert("이 게시물을 추천하시겠습니까?");
-			$("#U_check").val("2");
-			$("#frmPopular").submit();
+		 	$.ajax({
+				type : "post",
+				url : "PopularCheck",
+				data : {"b_num":"${board.b_num}",
+						"c_user_id" : "${session_id}"},
+				dataType : "json", 
+				success : function(data){
+					if(data == 1){
+						alert("추천은 한번씩만 가능합니다");
+					}else if(data == 0){
+						alert("추천하시겠습니까?");
+						$("#U_check").val("2");
+						$("#up_count").val("1");
+						$("#frmPopular").submit();
+					}
+				}
+			}) 
 		})
 		$("#down_btn").click(function(){
-			alert("이 게시물을 비추천하시겠습니까?");
-			$("#U_check").val("3");
-			$("#frmPopular").submit();
+		 	$.ajax({
+				type : "post",
+				url : "PopularCheck",
+				data : {"b_num":"${board.b_num}",
+						"c_user_id" : "${session_id}"},
+				dataType : "json", 
+				success : function(data){
+					if(data == 1){
+						alert("추천은 한번씩만 가능합니다");
+					}else if(data == 0){
+						alert("비추천하시겠습니까?");
+						$("#U_check").val("3");
+						$("#down_count").val("1");
+						$("#frmPopular").submit();
+					}
+				}
+			}) 
+
 		})
 		$("#b_delete_btn").click(function(){
 			$("#frmDelete").submit();
@@ -69,7 +98,10 @@
 </form>
 <form action="CB_TableDetilView" method="post" id="frmPopular">
 	<input type="hidden" id="b_num" name="b_num" value="${board.b_num }">
-	<input type="hidden" id="U_check" name="U_check" > 
+	<input type="hidden" id="U_check" name="U_check" >
+	<input type="hidden" id="up_count" name="up_count" >
+	<input type="hidden" id="down_count" name="down_count" > 
+	<input type="hidden" name="id" value="${session_id }"> 
 </form>
 <form action="tableDelete" method="post" id="frmDelete">
 	<input type="hidden" id="b_num" name="b_num" value="${board.b_num }">
@@ -116,8 +148,13 @@
 			</div>
 			<div style="text-align: center;">
 				<ul class="icons">
-					<li><i class="fas fa-thumbs-up" id="up_btn"><span class="label">좋아요 ${board.up_count }</span></i></li>
-					<li><i class="fas fa-thumbs-down" id="down_btn"><span class="label">싫어요 ${board.down_count }</span></i></li>
+					<c:if test="${details.up_count == '' || details.up_count == null }">
+						<li><i class="fas fa-thumbs-up" id="up_btn"><span class="label">좋아요  ${totalCount.up_count }</span></i></li>
+					</c:if>
+					<c:if test="${session_id != '' && session_id != null && details.up_count != null && details.up_count != ''  }">
+						<li><i class="fas fa-thumbs-up" id="up_btn" style="color: blue;"><span class="label">좋아요 ${totalCount.up_count }</span></i></li>
+					</c:if>
+					<li><i class="fas fa-thumbs-down" id="down_btn"><span class="label">싫어요${totalCount.down_count }</span></i></li>
 				</ul>
 			</div>
 			<c:if test="${session_id != board.user_id && session_id != null}">

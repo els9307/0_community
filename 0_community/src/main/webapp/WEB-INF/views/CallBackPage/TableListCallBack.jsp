@@ -9,6 +9,7 @@ function fn_detail(b_num){
 <form action="CB_TableDetilView" method="post" id="frmDetail">
 	<input type="hidden" id="b_num" name="b_num">
 	<input type="hidden" id="U_check" name="U_check" value="1"> 
+	<input type="hidden" id= "id" name="id" value="${session_id }">
 </form>
 <table>
 	<thead>

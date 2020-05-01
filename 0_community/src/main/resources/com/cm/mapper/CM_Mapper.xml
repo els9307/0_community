@@ -97,7 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			WHERE B_SUBJECT LIKE '%'||#{word}||'%'
 		</if>
 	</select>
-	<update id="up_PopularCount">
+<!-- 	<update id="up_PopularCount">
 		<![CDATA[
 			UPDATE CM_BOARD
 				SET
@@ -112,7 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					DOWN_COUNT = (SELECT NVL(MAX(DOWN_COUNT),0)+1 FROM CM_BOARD WHERE B_NUM = #{b_num})
 					WHERE B_NUM = #{b_num}
 		]]>
-	</update>
+	</update> -->
 	<select id="TableDtailView" resultType="com.cm.vo.CM_BOARD">
 		<![CDATA[
 			SELECT * FROM CM_BOARD WHERE B_NUM = #{b_num}
@@ -140,7 +140,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					            ,#{b_thumbimg}
 					            ,TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS')
 					            ,TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS'))
-					            
+			
 		]]>
 	</insert>
 	<update id="Board_Update" parameterType="com.cm.vo.CM_BOARD">
@@ -231,5 +231,109 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<![CDATA[
 			SELECT * FROM CM_COMMENT WHERE B_NUM = #{b_num}
 		]]>
+	</select>
+	<select id="DetailsCount" parameterType="java.util.HashMap" resultType="com.cm.vo.CM_DETAILS">
+	
+		<![CDATA[
+			SELECT CB.B_NUM
+			      ,CD.B_NUM
+			      ,CD.UP_COUNT
+			      ,CD.DOWN_COUNT
+			      ,CD.REPORT_COUNT
+			      ,CD.C_USER_ID
+			FROM CM_BOARD CB, CM_DETAILS CD
+			WHERE CD.B_NUM = CB.B_NUM
+			AND CB.B_NUM = #{b_num}
+			AND CD.C_USER_ID = #{id}
+			
+		]]>
+		
+<!-- 		<if test="id != '' and id != null">
+			AND CD.C_USER_ID = #{id}
+		</if> -->
+	</select>
+	<select id="BoardNum" resultType="com.cm.vo.CM_BOARD">
+		<![CDATA[
+			SELECT B_NUM FROM CM_BOARD WHERE ROWNUM <=1 ORDER BY B_NUM DESC
+		]]>
+	</select>
+	<insert id="Dtails_Insert" parameterType="java.util.HashMap">
+		<![CDATA[
+			INSERT INTO CM_DETAILS(
+								  D_NUM
+								 ,REPORT_COUNT
+								 ,UP_COUNT
+								 ,DOWN_COUNT
+								 ,B_NUM
+								 ,C_USER_ID
+								 ,REG_DATE
+								 )VALUES(
+								  CM_DETAILS_SEQ.nextval
+								 ,'0'
+								 ,'0'
+								 ,'0'
+								 ,#{b_num}
+								 ,#{id}
+								 ,TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS'))
+		]]>
+	</insert>
+	<insert id="PopularCount" parameterType="java.util.HashMap">
+		<if test="up_count != '' and up_count != null">
+				<![CDATA[
+				INSERT INTO CM_DETAILS(
+				                         D_NUM
+				                        ,REPORT_COUNT
+				                        ,UP_COUNT
+				                        ,DOWN_COUNT
+				                        ,B_NUM
+				                        ,C_USER_ID
+				                        ,REG_DATE
+				                        )VALUES(
+				                         CM_DETAILS_SEQ.nextval
+				                        ,''  --REPORT_COUNT
+				                        ,#{up_count}  --UP_COUNT
+				                        ,''  --DOWN_COUNT
+				                        ,#{b_num}
+				                        ,#{id}
+				                        ,TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS'))
+				]]>
+		</if>
+		<if test="down_count != '' and down_count != null">
+			<![CDATA[
+			INSERT INTO CM_DETAILS(
+			                         D_NUM
+			                        ,REPORT_COUNT
+			                        ,UP_COUNT
+			                        ,DOWN_COUNT
+			                        ,B_NUM
+			                        ,C_USER_ID
+			                        ,REG_DATE
+			                        )VALUES(
+			                         CM_DETAILS_SEQ.nextval
+			                        ,''  --REPORT_COUNT
+			                        ,''  --UP_COUNT
+			                        ,#{down_count}  --DOWN_COUNT
+			                        ,#{b_num}
+			                        ,#{id}
+			                        ,TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS'))
+                        
+			]]>
+		</if>
+	</insert>
+	<select id="totalCount" resultType="com.cm.vo.CM_DETAILS">
+		<![CDATA[
+			SELECT
+				SUM(UP_COUNT) AS UP_COUNT,
+				SUM(DOWN_COUNT) AS DOWN_COUNT
+				
+				FROM CM_DETAILS
+				
+				WHERE B_NUM = #{b_num}
+		]]>
+	</select>
+	<select id="PopularCheck" resultType="int">
+	<![CDATA[
+		SELECT COUNT(UP_COUNT) AS UP_COUNT,COUNT(DOWN_COUNT) FROM CM_DETAILS WHERE B_NUM = #{b_num} AND C_USER_ID = #{c_user_id}
+	]]>	
 	</select>
 </mapper>

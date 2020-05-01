@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cm.vo.CM_BOARD;
 import com.cm.vo.CM_COMMENT;
+import com.cm.vo.CM_DETAILS;
 import com.cm.vo.CM_USERINFO;
 
 @Repository("cm_mapper")
@@ -24,7 +25,7 @@ public interface CM_Mapper {
 	
 	public int TableCount(HashMap<String, Object> map);
 	
-	public void up_PopularCount(String b_num);
+	public void PopularCount(HashMap<String,Object> map);
 	
 	public void down_PopularCount(String b_num);
 	
@@ -47,4 +48,14 @@ public interface CM_Mapper {
 	public void TableComment(CM_COMMENT comment);
 	
 	public List<CM_COMMENT> CommentList(String b_num);
+	
+	public CM_DETAILS DetailsCount(HashMap<String, Object> map);
+	
+	public CM_BOARD BoardNum();
+	
+	public void Dtails_Insert(HashMap<String, Object> map);
+	
+	public CM_DETAILS totalCount(String b_num);
+	
+	public int PopularCheck(CM_DETAILS details);
 }
